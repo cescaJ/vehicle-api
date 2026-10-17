@@ -1,16 +1,21 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\VehicleController;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
+// Public routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/vehicles', [VehicleController::class, 'index']);
-Route::post('/vehicles', [VehicleController::class, 'store']);
-Route::get('/vehicles/{vehicle}', [VehicleController::class, 'show']);
-Route::put('/vehicles/{vehicle}', [VehicleController::class, 'update']);
-Route::delete('/vehicles/{vehicle}', [VehicleController::class, 'destroy']);
+// Protected routes (token required)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
 
-})->middleware('auth:sanctum');
+    Route::get('/vehicles', [VehicleController::class, 'index']);
+    Route::post('/vehicles', [VehicleController::class, 'store']);
+    Route::get('/vehicles/{vehicle}', [VehicleController::class, 'show']);
+    Route::put('/vehicles/{vehicle}', [VehicleController::class, 'update']);
+    Route::delete('/vehicles/{vehicle}', [VehicleController::class, 'destroy']);
+});

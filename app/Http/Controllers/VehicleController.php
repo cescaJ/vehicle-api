@@ -10,25 +10,19 @@ class VehicleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+        public function index(Request $request)
     {
-         $allowedFilters = [
-            'brand',
-            'model',
-            'color',
-            'year',
-            'price'
-        ];
+        $allowedFilters = ['brand', 'model', 'color', 'year', 'price'];
 
-         $query = Vehicle::query();
+        $query = Vehicle::query();
 
         foreach ($allowedFilters as $field) {
             if ($request->filled($field)) {
                 $query->where($field, $request->input($field));
             }
-        
-        return response()->json($query->get(), 200);
         }
+
+        return response()->json($query->get(), 200);
     }
 
     /**
